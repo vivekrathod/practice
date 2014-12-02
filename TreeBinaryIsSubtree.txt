@@ -1,0 +1,127 @@
+public class Node
+{
+     public int Value;
+     public Node Left;
+     public Node Right;
+}
+
+bool IsSubtree(Node node1, Node node2)
+{
+     // determine if the binary tree at root node node2 is a subtree of binary tree at root node node1
+    
+     // 1. DFS iterate over node1 tree looking for matching node1 value
+     // 2. when found matching node2 (by value) in node1 tree
+     // 3. begin DFS over node2 tree and the node1 subtree
+     // 4. at each node traversal compare the current node values
+     // 5. at any point if a mismatch is found continue search for matching node, and repeat 3,4,5
+     // 6. otherwise continue until all nodes are compared and trees are found to be equal
+     
+     Node current = node1;
+     bool backtrack = false;
+     Stack<Node> nodes = new Stack<Node>();
+     while (true)
+     {
+          if (backtrack)
+          {
+               current = current.Right;
+               backtrack = false;
+          }
+          else
+          {
+               if (current.Value == node2.Value)
+               {
+                    if (TreesAreEqual(current, node2))
+                         return true;
+                    // else continue searching for next matching node
+               }
+               nodes.Push(current);
+               current = current.Left;
+          }
+
+          if (current == null)
+          {
+               if (nodes.Count == 0)
+                    return false;
+               current = nodes.Pop();
+               backtrack = true;
+          }
+
+     }
+}
+
+// DFS over two trees and compare values at each node
+bool TreesAreEqual(Node node1, Node node2)
+{
+	Stack<Node> nodes1 = new Stack<Node>();
+	Stack<Node> nodes2 = new Stack<Node>();
+	Node current1 = node1;
+	Node current2 = node2;
+	bool backtrack = false;
+	while (true)
+	{
+		if (backtrack)
+		{
+			current1 = current1.Right;
+			current2 = current2.Right;
+			backtrack = false;
+		}
+		else
+		{
+			if (current1.Value != current2.Value)
+				return false;
+			nodes1.Push(current1);
+			nodes2.Push(current2);
+			current1 = current1.Left;
+			current2 = current2.Left;
+		}
+
+		if ((current1 == null && current2 != null)
+			 || (current1 != null && current2 == null))
+			return false;
+
+		if (current1 == null) // or current2 == null as both should be null at this point
+		{
+			if (nodes1.Count == 0 && nodes2.Count == 0)
+				return true;
+			current1 = nodes1.Pop();
+			current2 = nodes2.Pop();
+			backtrack = true;
+		}
+
+	}
+}
+
+case 3: unequal
+          6                         6
+     5               7          5               7
+               5                        
+              
+current1=65n5n675
+nodes1=7
+current2=65n5n67n
+nodes2=7
+backtrack=ftft
+
+case 2: trees are unequal
+          8                         8
+               9                         9
+                    7                         8
+
+current1=8n89n97
+nodes1=
+current2=8n89n98
+nodes2=
+backtrack=ftftf
+
+case 1: trees are equal
+          8                              8
+     4          9                    4          9
+7                              7
+
+current1=847n7n4n89n9n
+nodes1=
+current2=847n7n4n89n9n
+nodes2=
+backtrack=ftftftf
+
+

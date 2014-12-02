@@ -1,0 +1,64 @@
+void RemoveDuplicates(Node head)
+{
+	Node prev = null;
+	Node current = head;
+	HashSet<int> existing = new HashSet<int>();
+	
+	while (current != null)
+	{
+		if (existing.Contains(current.Value))
+		{
+			// delete the current node
+			prev.Next = current.Next;
+			
+		}
+		else
+		{
+			prev = current;
+			existing.Add(current.Value);
+		}
+		current = current.Next;
+	}
+}
+
+
+class Node
+{
+	int Value;
+	Node Next;
+}
+
+void RemoveDuplicatesNoBuffer(Node head)
+{
+	Node prev = null;
+	Node current = head;
+	
+	while (current != null)
+	{
+		if (alreadyEncountered(current.Value))
+		{
+			// delete the current node
+			prev.Next = current.Next;
+			
+		}
+		else
+		{
+			prev = current;
+			existing.Add(current.Value);
+		}
+		current = current.Next;
+	}	
+}
+
+boolean alreadyEncountered(int value, Node head)
+{
+	Node current = head;
+	
+	while (current != null)
+	{
+		if (current.Value == value) {
+			return true;
+		}
+	}
+	return false;
+}

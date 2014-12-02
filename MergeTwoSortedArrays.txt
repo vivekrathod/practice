@@ -1,0 +1,56 @@
+merge two sorted arrays array1 and array2.. assume that array1 has enough space to hold array2
+
+
+note: I assumed that the index of the last element of array1 (excluding the extra space at the end for array2 elements) is known
+
+merge(int[] array1, int[] array2, int array1EndIndex)
+{
+	int array2EndIndex = array2.Length -1;
+	int array1ExtraSpaceEndIndex = array1.Lenght - 1;
+	int array2CurrentIndex = array2EndIndex;
+	int array1CurrentIndex = array1EndIndex;
+	// start iterating backwards from the last element of array2
+	while (true)
+	{
+		// compare the current element in array2 with the element in array1
+		// put the greater of the two at the end of array1
+		// if array2 elem was greater then move on to next index in array2 and repeat until index becomes 0
+		// if array1 elem was greater then move on to next index in array1 and repeat until index becomes 0
+
+		if (array2[array2CurrentIndex] > array1[array1CurrentIndex])
+		{
+			array1[array1ExtraSpaceEndIndex] = array2[array2CurrentIndex];
+			array2CurrentIndex--;
+		}
+		else
+		{
+			array1[array1ExtraSpaceEndIndex] = array1[array1CurrentIndex];
+			array1CurrentIndex--;
+		}
+		array1ExtraSpaceEndIndex--;
+		
+		if (array2CurrentIndex < 0)
+			return;
+		
+		if (array1CurrentIndex < 0)
+		{
+			// means we have elements in array2 which need to be put in array1 starting at index 0 
+			for (int i = 0; i <= array2CurrentIndex; i++)
+			{
+				array1[i] = array2[i];
+			}
+			return;
+		}
+	}
+}
+
+case1:
+array1 = {5, 6, -1, -1} // -1 means empty space for holding array2
+array2 = {2, 8}
+
+array1ExtraSpaceEndIndex = 3, 2, 1, 0
+array1CurrentIndex = 1, 0, -1
+array2CurrentIndex = 1, 0
+
+array1 = {2, 5, 6, 8}
+

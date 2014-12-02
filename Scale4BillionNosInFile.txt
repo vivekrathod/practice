@@ -1,0 +1,5 @@
+file with 4 billion non-neg nos
+gen a number not contained in the file
+assume 1GB of available memory
+
+4 x 10^6

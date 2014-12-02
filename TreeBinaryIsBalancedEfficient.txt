@@ -1,0 +1,70 @@
+public class Node
+{
+	public int Value;
+	public Node Left;
+	public Node Right;
+}
+
+bool IsBalanced(Node node, ref int leftHt, ref int rightHt)
+{
+	if (node.Left == null)
+		leftHt = 0;
+	
+	if (node.Right == null)
+		rightHt = 0;
+	
+	if (node.Left != null)
+	{
+		node = node.Left;
+		if (!IsBalanced(node, leftHt, rightHt))
+			return false;
+		leftHt++;
+	}
+	
+	if (node.Right != null)
+	{
+		node = node.Right;
+		if (!IsBalanced(node, leftHt, rightHt))
+			return false;
+		rightHt++;
+	}
+	
+	return Math.Abs(rightHt - leftHt) <= 1;
+}
+
+testing:
+case 4:
+			8
+	6
+		7
+node=86768
+leftHt=01
+rightHt=01
+
+case3:
+			8
+	5	
+4		6
+node=8,5, 4, 6, 8
+leftHt=0,1, 2
+rightHt=0, 1
+
+case 2: unbalanced
+		8
+	5
+4		
+
+node= 8, 5, 4, 5, 8
+leftHt=0,1, 2
+rightHt=0,
+
+case 1: balanced
+
+	8
+5		4
+	
+	
+node = 8, 5, 4
+leftHt= 0, 1
+rightHt=0, 1
+

@@ -1,0 +1,110 @@
+public class Node
+{
+	public int Value;
+	public Node Left;
+	public Node Right;
+}
+
+bool IsTreeBalanced(Node node)
+{
+	if (node == null)
+		return true;
+		
+	int leftHt  = node.Left  == null ? 0 : FindHt(node.Left)  + 1;
+	int rightHt = node.Right == null ? 0 : FindHt(node.Right) + 1;
+	if (rightHt > leftHt ? rightHt - leftHt > 1 : leftHt - rightHt > 1)
+		return false;
+	
+	if (!IsTreeBalanced(node.Left))
+		return false;
+	
+	return IsTreeBalanced(node.Right);
+}
+
+int FindHt(Node node)
+{
+	if (node.Left == null && node.Right == null)
+		return 0;
+		
+	return Math.Max(FindHt(node.Left), FindHt(node.Right)) + 1;
+}
+
+case 6:
+			7
+	4			8
+		6			9
+	3
+
+	
+case 5:
+		7
+	6
+		8
+node=7
+l=2
+r=0
+		
+case 4:
+						8
+			7					11
+	3			5			9
+2			6			14
+	1		
+		
+node = 8
+l = 4
+r = 3
+if (!IsTreeBalanced(7))	
+node=7
+l=3
+r=2
+if (!IsTreeBalanced(7))->if (!IsTreeBalanced(3))
+	
+case 3:
+		6
+3			8
+	4			9
+			7
+				
+node = 6
+l = 2
+r = 3
+
+return IsTreeBalanced(8)				
+node = 8
+l = 0
+r = 2
+
+case 2:
+		5
+	4		7
+				8
+				
+node = 5
+l = 1
+r = 2				
+
+node = 4
+l=0
+r=0
+
+node = 7
+l = 0
+r = 1
+
+
+case 1:
+	9
+8		10
+
+node = 9
+leftHt = 1
+rightHt = 1
+
+node = 8
+lh = 0
+rh = 0
+
+node = 10
+lh = 0
+rh = 0

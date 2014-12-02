@@ -1,0 +1,59 @@
+Reverse(Node head)
+{
+	Node current = head;
+	Node prev = null;
+	while(current != null)
+	{
+		Node next = current.Next;
+		current.Next = prev;
+		prev = current;
+		current = next;
+	}
+}
+
+
+1->2->3
+prev = 				null,  1,   2   3
+prev.Next = 		null, null, 1
+current = 			1,     2,   3   null
+current.Next = 		null,		1   2
+next = 				2,			3   null
+
+
+implement using stack
+
+Node ReverseUsingStack(Node head)
+{
+	Stack<int> stack = new Stack<int>();
+	Node current = head;
+	while(current != null)
+	{
+		stack.Push(current.Value);
+		current = current.Next;
+	}
+		
+	
+	Node node = new Node();
+	node.Value	= stack.Pop();
+	Node newHead = node;
+	
+	while (stack.Peek() != null)
+	{
+		node.Next = new Node();
+		node.Next.Value = stack.Pop();
+		node = node.Next;
+		
+	}
+	return newHead;
+}
+
+1->2->3
+
+stack 3,2,1
+
+node.Value = 3,
+node.Next.Value  = 2,
+
+
+newHead->node.Next
+3 ->    2   -> 1

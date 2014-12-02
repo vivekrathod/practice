@@ -1,0 +1,22 @@
+// visit each node and its siblings before you move down to visiting the children
+Node FindNodeBFS(Node root, int value)
+{
+	Queue<Node> nodes = new Queue<Node>();
+	nodes.Enqueue(root);
+
+	while (nodes.Count > 0)
+	{
+		Node node = nodes.Dequeue();
+		
+		if (node.Value == value)
+			return node;
+		
+		// queue all children
+		if (node.Left != null)
+			nodes.Enqueue(node.Left);
+		if (node.Right != null)
+			nodes.Enqueue(node.Right);
+	}
+
+	return null;
+}

@@ -1,0 +1,161 @@
+Problem: Find index of i in array given that the original sorted array was rotated unknown no of times
+
+Solution1: Simple, but inefficient
+int Find(int i, int[] array)
+{
+	// \todo check for array of length 0,1
+	
+	for (int currIndex = 1; currIndex < array.Length; currIndex++)
+	{
+		int current = array[currIndex];
+		if (current == i)
+			return j;
+		
+		int nextIndex = currIndex+1;
+		if (nextIndex >= array.Length)
+			break;
+	
+		int next = array[nextIndex];
+		if (next < current )
+		{
+			// means the original sorted array must've starts at nextIndex
+			return BinarySearch(i, array, nextIndex, array.Length-1);
+		}
+	}
+	
+	// value not found
+	return -1;
+}
+
+int BinarySearch(int i, int[] array, int startIndex, int endIndex)
+{
+	// \todo validate that indexes are in range for the specified array
+	
+	if (endIndex < startIndex)
+		return -1; // not found
+		
+	int mid = startIndex + (endIndex - startIndex)/2;
+	if (i == array[mid])
+		return mid;
+	else if (i > array[mid])
+		return BinarySearch(i, array, mid+1, endIndex);
+	else // (i < array[mid])
+		return BinarySearch(i, array, startIndex, mid -1);
+}
+
+
+Solution2: Uses modified form of Binary search
+
+6,7,8,9,1,2,3,4,5
+1,2,3,4,5,6,7,8,9
+2,3,4,5,6,7,8,9,1
+
+start < mid < end
+start < mid > end
+	start < end
+	start > end
+start > mid < end
+	start < end
+	start > end
+start > mid > end - means the array is sorted in reverse (descending in our case) order -  this case not possible to arrive at by rotating an originally sorted (in ascending order) array
+
+
+static int BinarySearch(int i, int[] array, int startIndex, int endIndex)
+{
+	if (endIndex < startIndex)
+		return -1;
+		
+	int midIndex = startIndex + (endIndex - startIndex)/2;
+	int mid = array[midIndex];
+	int start = array[startIndex];
+	int end = array[endIndex];
+	
+	if (i == mid)
+		return mid;
+	else if (start <= mid && mid <= end)
+	{
+		// normal case of a binary search where all elements are sorted
+		if (i > mid)
+			return BinarySearch(i, array, mid+1, endIndex);
+		else
+			return BinarySearch(i, array, startIndex, mid-1);
+	}
+	else if (start <= mid && mid >= end)
+	{ 
+		// start to mid is sorted, but mid to end is not
+		if (start >= end)
+		{
+			if (i > start && i < mid)
+				return BinarySearch(i, array, startIndex, mid-1);
+			else
+				return BinarySearch(i, array, mid+1, endIndex);
+		}
+		else // start < end
+		{
+			// this is not a valid case as start < end would mean its a sorted array, but
+			// in that case mid can not be greater than end
+			throw new ArgumentException("start<end; start<mid>end");
+		}
+	}
+	else if (start >= mid && mid <= end)
+	{
+		// mid to end is sorted, but not start to mid
+		if (start >= end)
+		{
+			if (i > mid && i <= end)
+				return BinarySearch(i, array, mid+1, endIndex);
+			else
+				return BinarySearch(i, array, startIndex, mid-1);
+		}
+		else // start < end
+		{
+			// this is not a valid case as start < end would mean its a sorted array, but
+			// in that case mid can not be smaller than start
+			throw new ArgumentException("start<end; start>mid<end");
+		}
+	}
+	else // start > mid && mid > end
+	{
+		// means the array is sorted in reverse (descending in our case) order -  this case not possible to arrive at by rotating an originally sorted (in ascending order) array
+		throw new ArgumentException("start>mid>end");
+	}
+}
+
+// concise version of the above algo
+static int BinarySearch(int numToSearch, int[] array, int startIndex, int endIndex)
+{
+	if (endIndex < startIndex)
+		return -1;
+
+	int midIndex = startIndex + (endIndex - startIndex) / 2;
+	int mid = array[midIndex];
+	int start = array[startIndex];
+	int end = array[endIndex];
+
+	if (numToSearch == mid)
+		return midIndex;
+
+	if (mid <= end)
+	{
+		// 'mid to end' is sorted, or the whole array is sorted (no rotation)
+		// an element greater than mid and less than end is to be found on the 'mid to end' side of the array
+		if (numToSearch > mid && numToSearch <= end)
+			return BinarySearch(numToSearch, array, midIndex + 1, endIndex);
+		else
+			return BinarySearch(numToSearch, array, startIndex, midIndex - 1);
+	}
+
+	if (mid >= start)
+	{
+		// 'start to mid' is sorted, or the whole array is sorted (no rotation)
+		// an element smaller than mid and greater than start is to be found on the 'start to mid' side of the array
+		if (numToSearch < mid && numToSearch >= start)
+			return BinarySearch(numToSearch, array, startIndex, midIndex - 1);
+		else
+			return BinarySearch(numToSearch, array, midIndex + 1, endIndex);
+			
+	}
+
+	// should never reach this code \todo
+	return -1;
+}

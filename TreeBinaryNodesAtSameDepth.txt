@@ -1,0 +1,61 @@
+Array of linked-lists - each list with nodes at the same depth level
+public class Node
+{
+	public int Value;
+	public Node Left;
+	public Node Right;
+}
+
+Node[] NodesAtSameDepth(Node root)
+{
+	// lets try using the DFS
+	int maxDepth = 10;
+	Node[] nodesAtSameDepth = new Node[maxDepth];
+	
+	Stack<Node> stack = new Stack<Node>();
+	stack.Push(root);
+	Stack<int> depths = new Stack<int>();
+	depths.Push(0);
+	
+	while (stack.Count != 0)
+	{
+		Node node = stack.Pop();
+		int depth = stack.Pop();
+		
+		// store the node at this depth in the corressponding linked list
+		nodesAtSameDepth[depth] = InsertNodeAtTop(nodesAtSameDepth[depth], node);
+		
+		// increase the depth only once before pushing Right/Left nodes
+		depth++;
+		
+		if (node.Right != null)
+		{
+			stack.Push(node.Right);
+			depths.Push(depth);
+		}
+		
+		if (node.Left != null)
+		{
+			stack.Push(node.Left);
+			depths.Push(depth);
+		}
+	}
+}
+
+	
+// inserts node in the linked list pointed to by root node
+// if root node is empty/null then a new list with root at node 'node' is created
+Node InsertNodeAtTop(Node root, Node node)
+{
+	if (root != null)
+		node.Next = root;
+	return node;
+}
+
+Case1:
+			8
+	4				9
+2		4
+
+stack = 
+node = 2,4,9

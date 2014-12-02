@@ -1,0 +1,69 @@
+public class Node
+{
+	public int Value;
+	public Node Left;
+	public Node Right;
+}
+
+Node FindNodeDFS(Node root, int value)
+{
+	Node node = root;
+	Stack<Note> nodes = new Stack<Node>();
+	
+	while(node != null)
+	{
+		if (node.Value == value)
+			return node;
+		
+		// 1. push on the stack if the current node's left is not null		
+		if (node.Left != null)
+		{
+			nodes.Push(node);
+			node = node.Left;
+		}
+		// 2. if left is null, simply assign the right node to current node 
+		// (no need to push current node on stack - we will not need to visit it 
+		// again since we are already traversing its right side)
+		else if (node.Right != null)
+		{
+			node = node.Right;
+		}
+		// 3. if the current node's Left and Right both are null then pop a node from the stack and assign it to current node
+		else
+		{
+			while(node == null && nodes.Count > 0)
+				node = nodes.Pop().Right;
+		}
+	}
+	
+	// matching node was not found
+	return null;
+}
+
+
+// simple and best solution so far!
+static Node FindNodeSimple(Node root, int value)
+{
+	Stack<Node> stack = new Stack<Node>();
+	stack.Push(root);
+
+	while (stack.Count != 0)
+	{
+		Node node = stack.Pop();
+		if (node.Value == value)
+			return node;
+
+		if (node.Right != null)
+		{
+			stack.Push(node.Right);
+		}
+
+		if (node.Left != null)
+		{
+			stack.Push(node.Left);
+		}
+	}
+
+	// nothing found
+	throw new Exception("Value not found");
+}

@@ -1,0 +1,39 @@
+//sort array of strings with anagrams close to each other
+void SortArrayWithAnagrams(string[] strings)
+{
+	
+}
+
+//two given strings are anagrams of each other
+bool AreAnagrams(string string1, string string2)
+{
+	// their lengths should match
+	if (string1.Length != string2.Length)
+		return false;
+	
+	// assuming that case does not matter
+	string lower1 = string1.ToLower();
+	string lower2 = string2.ToLower();
+	
+	Dictionary<char, int> source = new Dictionary<char, int>();
+	foreach (char c in lower1)
+	{
+		if (source.ContainsKey(c))
+			source[c]++;
+		else
+			source.Add(c,1);
+	}
+	
+	foreach(char c in lower2)
+	{
+		if (!source.ContainsKey(c))
+			return false;
+		else
+		{
+			if (--source[c] == 0)
+				source.Remove(c);
+		}
+	}
+	
+	return source.Count == 0;
+}
