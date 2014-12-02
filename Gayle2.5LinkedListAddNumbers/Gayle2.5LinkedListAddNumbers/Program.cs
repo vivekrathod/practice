@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gayle2._5LinkedListAddNumbers
+namespace LinkedListAddNumbers
 {
     /// <summary>
     /// adds two given numbers represented by linked lists 2->3->4 + 4->5->6 = 6->9->0
@@ -19,7 +19,7 @@ namespace Gayle2._5LinkedListAddNumbers
 
             Node n2 = new Node { data = 4 };
             n2.next = new Node { data = 5 };
-            //n2.next.next = new Node { data = 6 };
+            n2.next.next = new Node { data = 6 };
 
             Node ans = new Node();
 
