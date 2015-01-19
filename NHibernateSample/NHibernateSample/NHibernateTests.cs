@@ -119,8 +119,30 @@ namespace NHibernateSample
             }
             #endregion
         }
-        
-        static void CreateDatabase()
+
+        /// <summary>
+        /// Lazy loading will cause the proxy to be loaded instead of the real type. 
+        /// </summary>
+        [Test]
+        public void TestLazyLoading()
+        {
+            // first save a Cat
+            Int64 cid = 0;
+            using (ISession session = SessionFactory.OpenSession())
+            {
+                Cat cat = new Cat {Name = "cat2", Sex = 'M', Weight = 13};
+                cid = (Int64) session.Save(cat);
+            }
+
+            using (ISession session = SessionFactory.OpenSession())
+            {
+                Cat cat = session.Load<Cat>(cid);
+                // becasue proxy is loaded
+                Assert.That(cat.GetType() , Is.Not.TypeOf<Cat>());
+            }
+        }
+
+        static private void CreateDatabase()
         {
             using (SqlConnection sqlConnection = new SqlConnection(SysConfig.ConfigurationManager.AppSettings["SqlServerConnectionString"]))
             {
@@ -136,7 +158,7 @@ namespace NHibernateSample
             }
         }
 
-        static public void DeploySchema()
+        static private void DeploySchema()
         {
             SchemaUpdate update = new SchemaUpdate(Configuration);
             StringBuilder sb = new StringBuilder();
