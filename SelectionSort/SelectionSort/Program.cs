@@ -13,7 +13,7 @@ namespace SelectionSort
             int[] list = { 12, 33, 32, 55, 22, 88, 5, 4, 8, 3, 9 };
 
             Console.WriteLine("Selection sort..");
-            //choose the lowest no in the list in each inner loop. Choose the next lowest from the remaining in next outer loop iteration");
+            //choose the lowest no in each inner loop iteration.
             for (int i = 0; i < list.Length-1; i++)
             {
                 for (int j = i+1; j < list.Length; j++)
