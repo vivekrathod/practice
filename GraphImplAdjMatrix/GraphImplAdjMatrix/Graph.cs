@@ -171,6 +171,14 @@ namespace GraphImplAdjMatrix
 
         public void PrintAdjMatrix()
         {
+            // print node data first
+            foreach (var node in _nodes)
+            {
+                Console.Write("{0}, ", node == null ? -1 : node.Data);
+            }
+            Console.WriteLine();
+
+            // print adj matrix
             for (int i = -1; i < _currentIndex; i++)
             {
                 
@@ -218,7 +226,44 @@ namespace GraphImplAdjMatrix
             int toIndex = node2.Index;
 
             // \todo sanity check on the indexes
+            _matrix[fromIndex, toIndex] = -1;
+        }
 
+        public void RemoveNode(Node node)
+        {
+            // \todo sanity check for node's existence
+
+            // delete edges which have this node
+            for (int i = node.Index; i < _currentSize -1; i++)
+            {
+                for (int j = 0; j < _currentSize; j++)
+                {
+                    _matrix[i, j] = _matrix[i+1, j];
+                }
+            }
+            for (int i = 0; i < _currentSize; i++)
+            {
+                for (int j = node.Index; j < _currentSize -1; j++)
+                {
+                    _matrix[i, j] = _matrix[i, j + 1];
+                }
+            }
+
+            // delete the node 
+            _nodes[node.Index] = null;
+            // shift the array left to fill the hole and reassign indexes
+            for (int i = node.Index; i < _nodes.Length - 1; i++)
+            {
+                _nodes[i] = _nodes[i + 1];
+                Node currentNode = _nodes[i];
+                if (currentNode != null)
+                {
+                    currentNode.Index = i;
+                }
+            }
+
+            _currentIndex--;
+            _currentSize--;
         }
     }
 

@@ -72,6 +72,17 @@ namespace GraphImplAdjMatrix
             Console.WriteLine("(Using BFS) Is node {0} connected to {1}: {2}", node1.Data, node6.Data,
                 graph.AreConnectedBFS(node1, node6));
 
+
+            Console.WriteLine();
+            graph.RemoveNode(node3);
+            Console.WriteLine("Adj matrix after removing node {0}", node3.Data);
+            graph.PrintAdjMatrix();
+
+            Console.WriteLine();
+            graph.RemoveNode(node1);
+            Console.WriteLine("Adj matrix after removing node {0}", node1.Data);
+            graph.PrintAdjMatrix();
+
         }
     }
 }
