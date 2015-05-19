@@ -55,8 +55,6 @@ namespace GraphImplAdjMatrix
             Console.WriteLine("(Using BFS)Is node {0} connected to {1}: {2}", node3.Data, node4.Data,
                 graph.AreConnectedBFS(node3, node4));
 
-
-
             Node node5 = new Node { Data = 5 };
             Node node6 = new Node { Data = 6 };
             graph.AddNode(node5);
