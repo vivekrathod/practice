@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="MappingCollections"
+                   namespace="MappingCollections">
+
+  <class name="Order" table="Orders">
+    
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <discriminator column="Type"/>
+    
+    <property name="OrderNumber" />
+    <property name="OrderDate" />
+
+    <!--<set name="OrderLines" cascade="all-delete-orphan" >-->
+    <bag name="OrderLines" cascade="save-update">
+    <!--<bag name="OrderLines" >-->
+      <key column="OrderId"/>
+      <one-to-many class="OrderLine"/>
+    </bag>
+
+    </class>
+
+</hibernate-mapping>
