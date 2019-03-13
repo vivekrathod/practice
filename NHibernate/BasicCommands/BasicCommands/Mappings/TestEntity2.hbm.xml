@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="BasicCommands"
+                   namespace="BasicCommands.Model">
+
+  <class name="TestEntity2" table="TestEntity2">
+
+    <id name="Id">
+      <generator class="assigned"/>
+    </id>
+    <discriminator column="Type"/>
+
+    <property name="TestProp1" />
+    <property name="TestProp2" />
+
+    <bag name="TestEntity1Entities" cascade="save-update">
+      <key column="TestEntity1Id"/>
+      <one-to-many class="TestEntity1"/>
+    </bag>
+    
+
+  </class>
+
+</hibernate-mapping>

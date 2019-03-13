@@ -13,8 +13,10 @@
     <property name="OrderNumber" />
     <property name="OrderDate" />
 
-    <!--<set name="OrderLines" cascade="all-delete-orphan" >-->
-    <bag name="OrderLines" cascade="save-update">
+    <bag name="OrderLines" cascade="all-delete-orphan" >
+    <!--<bag name="OrderLines" cascade="save-update">-->
+    <!--<bag name="OrderLines" inverse="true">-->
+    <!--<bag name="OrderLines" inverse="true" cascade="save-update">-->
     <!--<bag name="OrderLines" >-->
       <key column="OrderId"/>
       <one-to-many class="OrderLine"/>

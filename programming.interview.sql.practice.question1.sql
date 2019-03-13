@@ -49,3 +49,6 @@ select s.name, o2.id, o2.amount, c.name from orders o2
 join salespersons s on o2.s_id = s.id
 join customers c on o2.c_id = c.id
 join (select max(o1.amount) as maxOrder from orders o1 group by o1.s_id) as o1 on o1.maxOrder = o2.amount
+
+
+select * from customers where null is null

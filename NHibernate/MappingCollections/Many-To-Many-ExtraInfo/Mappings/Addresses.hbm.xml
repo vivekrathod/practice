@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Many-To-Many-ExtraInfo"
+                   namespace="Many_To_Many_ExtraInfo">
+
+  <class name="Address" table="Address">
+
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+
+    <property name="AddressString" />
+
+    <!--<bag name="Persons" table="PersonAddress" cascade="save-update">
+      <key column="AddressId"/>
+      <many-to-many column="PersonId" class="Person"/>
+    </bag>-->
+
+    <join table="PersonAddress" >
+      <key>
+        <column name="AddressId"/>
+        <column name="PersonId"/>
+      </key>
+      <property name="IsDefault"/>
+      <!--<property name="ValidFrom"/>
+      <property name="ValidTo"/>-->
+    </join>
+
+  </class>
+
+</hibernate-mapping>

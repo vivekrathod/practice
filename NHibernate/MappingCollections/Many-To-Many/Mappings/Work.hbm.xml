@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Many-To-Many"
+                   namespace="Many_To_Many">
+
+  <class name="Work">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    
+    <property name="Name"/>
+
+    <!--<bag name="Authors" table="AuthorWork" cascade="save-update">-->
+    <!--<bag name="Authors" table="AuthorWork" inverse="true" cascade="save-update">-->
+    <bag name="Authors" table="AuthorWork" inverse="true" cascade="delete-orphan">
+    <!--<bag name="Authors" table="AuthorWork" inverse="true">-->
+      <key column="WorkId"/>
+      <many-to-many column="AuthorId" class="Author"/>
+    </bag>
+
+  </class>
+
+</hibernate-mapping>

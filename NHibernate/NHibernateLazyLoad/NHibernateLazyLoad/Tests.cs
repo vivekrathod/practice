@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using NUnit.Framework;
 using NHibernate;
+using NHibernate.Linq;
 using NHibernate.Proxy;
 using NHibernate.Tool.hbm2ddl;
 
@@ -34,7 +37,7 @@ namespace NHibernateLazyLoad
         {
             _log.Debug("Starting setup...");
 
-            var sqlite = @"C:\Work\Code\NHibernateLazyLoad\NHibernateLazyLoad\test.sqlite";
+            var sqlite = @"C:\Work\Code\practice\NHibernate\NHibernateLazyLoad\NHibernateLazyLoad\test.sqlite";
             if (File.Exists(sqlite))
                 File.Delete(sqlite);
 
@@ -52,7 +55,7 @@ namespace NHibernateLazyLoad
             configuration.Properties["dialect"] = "NHibernate.Dialect.SQLiteDialect";
             configuration.Properties["connection.driver_class"] = "NHibernate.Driver.SQLite20Driver";
             configuration.Properties["connection.connection_string"] = connectionStringBuilder.ConnectionString;
-            configuration.Properties["show_sql"] = "true";
+            configuration.Properties["show_sql"] = "false";
             configuration.Properties["generate_statistics"] = "false";
 
             configuration.AddAssembly(typeof(TestFixture).Assembly);
@@ -137,7 +140,43 @@ namespace NHibernateLazyLoad
                 order = session.Load<Order>(savedOrderId);
                 Assert.True(order.OrderDate == DateTime.Today.AddDays(1));
             }
+        }
 
+        [Test]
+        public void TestUpdate_Threaded()
+        {
+            Order order;
+            int savedOrderId;
+            using (var session1 = _sessionFactory.OpenSession())
+            {
+                order = new Order { OrderNumber = 1, OrderDate = DateTime.Today };
+                OrderLine ol1 = new OrderLine { Amount = 12, ProductName = "sun screen", Order = order };
+                OrderLine ol2 = new OrderLine { Amount = 13, ProductName = "banjo", Order = order };
+                order.OrderLines = new List<OrderLine> { ol1, ol2 };
+
+                savedOrderId = (int)session1.Save(order);
+                session1.Save(ol1);
+                session1.Save(ol2);
+
+                session1.Flush();
+            }
+
+            // another thread updating the same entity using its own session 
+            var mre = new ManualResetEvent(false);
+            var thread = new Thread(() =>
+            {
+
+                using (var session2 = _sessionFactory.OpenSession())
+                {
+                    order.OrderNumber = 123;
+                    Assert.DoesNotThrow(() => session2.Update(order));
+                }
+
+                mre.Set();
+            });
+
+            thread.Start(null);
+            mre.WaitOne();
         }
 
 
@@ -278,7 +317,28 @@ namespace NHibernateLazyLoad
                 Assert.True(mergedOrder.OrderLines.Count == 1);
             }
         }
-        
+
+        [Test]
+        public void TestLazyLoading_UsingRefresh()
+        {
+            Order order;
+            int savedOrderId;
+            using (var session = _sessionFactory.OpenSession())
+            {
+                order = new Order {OrderNumber = 1, OrderDate = DateTime.Today};
+                OrderLine ol1 = new OrderLine {Amount = 12, ProductName = "sun screen", Order = order};
+                OrderLine ol2 = new OrderLine {Amount = 13, ProductName = "banjo", Order = order};
+                order.OrderLines = new List<OrderLine> {ol1, ol2};
+
+                savedOrderId = (int) session.Save(order);
+                session.Save(ol1);
+                session.Save(ol2);
+
+                Assert.True(NHibernateUtil.IsInitialized(order.OrderLines));
+                session.Flush();
+            }
+        }
+
         [Test]
         public void TestLazyLoading()
         {
@@ -295,13 +355,18 @@ namespace NHibernateLazyLoad
                 session.Save(ol1);
                 session.Save(ol2);
 
+                Assert.True(NHibernateUtil.IsInitialized(order.OrderLines));
                 session.Flush();
+
+                session.Refresh(order);
+                // test that the lazy collection OrderLines is also not initialized (collections are lazy loaded by default)
+                Assert.False(NHibernateUtil.IsInitialized(order.OrderLines));
             }
 
             // another session
             using (var session = _sessionFactory.OpenSession())
             {
-                order = session.Load<Order>(savedOrderId);
+                order = session.Get<Order>(savedOrderId);
                 //log.DebugFormat("loaded order id: {0}", order.Id);
                 _log.Debug("About to load order number... which is a non-lazy property (default mode for properties)");
                 _log.DebugFormat("loaded order number: {0}", order.OrderNumber);
@@ -481,5 +546,90 @@ namespace NHibernateLazyLoad
             }
 
         }
+
+        [Test]
+        public void TestEvict()
+        {
+            Order order;
+            int savedOrderId;
+            using (var session = _sessionFactory.OpenSession())
+            {
+                order = new Order {OrderNumber = 1, OrderDate = DateTime.Today};
+                OrderLine ol1 = new OrderLine {Amount = 12, ProductName = "sun screen", Order = order};
+                OrderLine ol2 = new OrderLine {Amount = 13, ProductName = "banjo", Order = order};
+                order.OrderLines = new List<OrderLine> {ol1, ol2};
+
+                savedOrderId = (int) session.Save(order);
+                session.Save(ol1);
+                session.Save(ol2);
+
+                session.Flush();
+            }
+
+            using (var session = _sessionFactory.OpenSession())
+            {
+                // before eviction
+                var loadedOrder = session.Get<Order>(savedOrderId);
+                Assert.That(session.Contains(loadedOrder), Is.True);
+                Assert.That(NHibernateUtil.IsInitialized(loadedOrder.OrderLines), Is.False);
+                foreach (var line in order.OrderLines)
+                {
+                    Console.WriteLine(line.ProductName);
+                }
+                Assert.That(NHibernateUtil.IsInitialized(loadedOrder.OrderLines), Is.True);
+
+                session.Clear();
+
+
+                Assert.That(session.Contains(loadedOrder), Is.False);
+                Assert.That(session.Contains(loadedOrder.OrderLines), Is.False);
+                Assert.That(NHibernateUtil.IsInitialized(loadedOrder.OrderLines), Is.False);
+
+                foreach (var line in order.OrderLines)
+                {
+                    Console.WriteLine(line.ProductName);
+                }
+                //OrderLine ol3 = new OrderLine { Amount = 33, ProductName = "dsddas", Order = loadedOrder };
+                //order.OrderLines.Add(ol3);
+                //Assert.DoesNotThrow(() => session.Update(order));
+            }
+        }
+
+        [Test]
+        public void TestQueryLargeDataUnderTransaction()
+        {
+            int count = 50000;
+            using (var session = _sessionFactory.OpenSession())
+            {
+                Order order;
+                // write large amount of data
+                session.BeginTransaction();
+                for (int i = 0; i < count; i++)
+                {
+
+                    order = new Order {OrderNumber = i, OrderDate = DateTime.Today};
+                    OrderLine ol1 = new OrderLine {Amount = 1 + i, ProductName = $"sun screen {i}", Order = order};
+                    OrderLine ol2 = new OrderLine {Amount = 2 + i, ProductName = $"banjo {i}", Order = order};
+                    order.OrderLines = new List<OrderLine> {ol1, ol2};
+
+                    session.Save(order);
+                    session.Save(ol1);
+                    session.Save(ol2);
+                }
+
+                session.Transaction.Commit();
+
+                Stopwatch s = new Stopwatch();
+
+                // read the same data 
+                session.BeginTransaction();
+                var result = session.Query<Order>().Where(o => o.OrderNumber > 0).Skip(0).Take(100).ToList();
+                session.Transaction.Commit();
+
+                s.Stop();
+                Console.WriteLine(s.ElapsedMilliseconds);
+            }
+        }
+
     }
 }

@@ -12,6 +12,10 @@
     <property name="Amount"/>
     <property name="ProductName"/>
 
+    <!--<many-to-one name="Order" class="Order" cascade="save-update" column="OrderId"/>-->
+    <!--<many-to-one name="Order" class="Order" column="OrderId" insert="false" update="false"/>-->
+    <!--<many-to-one name="Order" class="Order" column="OrderId" update="false"/>-->
+    <!--<many-to-one name="Order" class="Order" cascade="save-update" column="OrderId" insert="false" update="false"/>-->
     <many-to-one name="Order" class="Order" column="OrderId"/>
 
   </class>

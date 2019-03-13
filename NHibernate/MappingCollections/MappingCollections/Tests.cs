@@ -8,6 +8,10 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using log4net;
+using log4net.Appender;
+using log4net.Core;
+using log4net.Layout;
+using log4net.Repository.Hierarchy;
 using NUnit.Framework;
 using NHibernate;
 using NHibernate.Proxy;
@@ -20,12 +24,25 @@ namespace MappingCollections
     {
         private ISessionFactory _sessionFactory;
         private ILog _log;
+        private string currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            //log4net.Config.BasicConfigurator.Configure();
-            log4net.Config.XmlConfigurator.ConfigureAndWatch(new FileInfo(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+            var appender = new FileAppender
+            {
+                AppendToFile = false,
+                File = Path.Combine(currentDirectory, "ut.log"),
+                Layout = new SimpleLayout(),
+                ImmediateFlush = true
+            };
+            appender.ActivateOptions();
+            log4net.Config.BasicConfigurator.Configure(appender);
+            ((Hierarchy)log4net.LogManager.GetRepository()).Root.Level = Level.Error;
+
+            var log = LogManager.GetLogger("NHibernate.SQL");
+            ((log4net.Repository.Hierarchy.Logger)log.Logger).Level = Level.Debug;
+            
             _log = LogManager.GetLogger(typeof(TestFixture));
         }
 
@@ -52,7 +69,7 @@ namespace MappingCollections
             configuration.Properties["dialect"] = "NHibernate.Dialect.SQLiteDialect";
             configuration.Properties["connection.driver_class"] = "NHibernate.Driver.SQLite20Driver";
             configuration.Properties["connection.connection_string"] = connectionStringBuilder.ConnectionString;
-            configuration.Properties["show_sql"] = "true";
+            configuration.Properties["show_sql"] = "false";
             configuration.Properties["generate_statistics"] = "false";
 
             configuration.AddAssembly(typeof(TestFixture).Assembly);
@@ -208,6 +225,105 @@ namespace MappingCollections
                 session.Flush();
             }
         }
-       
+
+
+        /// <summary>
+        ///test the many-to-one side of the relationship
+        ///Order's OrderLines collection not marked (i.e. inverse=false) and OrderLine's Order many-to-one association marked with insert/update=false 
+        ///DEBUG - INSERT INTO OrderLine(Amount, ProductName, OrderId, Type) VALUES(@p0, @p1, @p2, 'MappingCollections.OrderLine'); select last_insert_rowid(); @p0 = 12 [Type: Int32(0:0:0)], @p1 = 'sun screen' [Type: String(0:0:0)], @p2 = NULL[Type: Int32(0:0:0)]
+        ///DEBUG - INSERT INTO Orders(OrderNumber, OrderDate, Type) VALUES(@p0, @p1, 'MappingCollections.Order'); select last_insert_rowid(); @p0 = 1 [Type: Int32(0:0:0)], @p1 = 2018-10-26T00:00:00.0000000 [Type: DateTime(0:0:0)]
+        ///DEBUG - UPDATE OrderLine SET Amount = @p0, ProductName = @p1, OrderId = @p2 WHERE Id = @p3; @p0 = 12 [Type: Int32(0:0:0)], @p1 = 'sun screen' [Type: String(0:0:0)], @p2 = 1 [Type: Int32(0:0:0)], @p3 = 1 [Type: Int32(0:0:0)]
+
+        ///Order's OrderLines collection marked with inverse=true and OrderLine's Order many-to-one association is not marked with insert/update=false 
+        ///DEBUG - INSERT INTO OrderLine(Amount, ProductName, OrderId, Type) VALUES(@p0, @p1, @p2, 'MappingCollections.OrderLine'); select last_insert_rowid(); @p0 = 12 [Type: Int32(0:0:0)], @p1 = 'sun screen' [Type: String(0:0:0)], @p2 = NULL[Type: Int32(0:0:0)]
+        ///DEBUG - INSERT INTO Orders(OrderNumber, OrderDate, Type) VALUES(@p0, @p1, 'MappingCollections.Order'); select last_insert_rowid(); @p0 = 1 [Type: Int32(0:0:0)], @p1 = 2018-10-26T00:00:00.0000000 [Type: DateTime(0:0:0)]
+        ///DEBUG - UPDATE OrderLine SET Amount = @p0, ProductName = @p1, OrderId = @p2 WHERE Id = @p3; @p0 = 12 [Type: Int32(0:0:0)], @p1 = 'sun screen' [Type: String(0:0:0)], @p2 = 1 [Type: Int32(0:0:0)], @p3 = 1 [Type: Int32(0:0:0)]
+
+        /// </summary>
+        [Test]
+        public void TestChildToParentRelationship()
+        {
+            Order order;
+            int savedOrderId;
+            int savedOrderLineId;
+            OrderLine ol1;
+            using (var session = _sessionFactory.OpenSession())
+            //using (var tran = session.BeginTransaction())
+            {
+                ol1 = new OrderLine { Amount = 12, ProductName = "sun screen" };//, Order = order };
+                //savedOrderLineId = (int)session.Save(ol1);
+                session.Persist(ol1);
+
+                order = new Order { OrderNumber = 1, OrderDate = DateTime.Today };
+                order.OrderLines.Add(ol1);
+                
+                //savedOrderId = (int)session.Save(order);
+                session.Persist(order);
+
+                ol1.Order = order;
+
+                //ol1.Amount = 13;
+                //session.Update(ol1);
+
+                // Flush will sync the in-memory state with the persisted state by writing to the database
+                session.Flush();
+
+                // if a transcation was opened then it has to be committed to persist the changes - no need to call Flush in that case
+                //tran.Commit();
+            }
+
+            //using (var session = _sessionFactory.OpenSession())
+            //{
+            //    ol1 = session.Load<OrderLine>(savedOrderLineId);
+
+            //    Assert.True(order.OrderLines.Count == 2);
+            //    OrderLine loadedOl1 = order.OrderLines.FirstOrDefault(ol => ol.Id == ol1.Id);
+            //    Assert.NotNull(loadedOl1);
+            //    Assert.True(loadedOl1.Amount == ol1.Amount);
+            //    Assert.True(loadedOl1.ProductName == ol1.ProductName);
+            //    Assert.True(loadedOl1.Order == order);
+            //}
+        }
+
+
+        [Test]
+        public void TestOrphans()
+        {
+            Order order;
+            int savedOrderId;
+            int savedOrderLineId;
+            OrderLine ol1;
+            using (var session = _sessionFactory.OpenSession())
+            {
+                ol1 = new OrderLine {Amount = 12, ProductName = "sun screen"};
+                savedOrderLineId = (int) session.Save(ol1);
+
+                order = new Order {OrderNumber = 1, OrderDate = DateTime.Today};
+                ol1.Order = order;
+                order.OrderLines.Add(ol1);
+                savedOrderId = (int) session.Save(order);
+
+
+                // Flush will sync the in-memory state with the persisted state by writing to the database
+                session.Flush();
+            }
+
+            using (var session = _sessionFactory.OpenSession())
+            {
+                ol1 = session.Get<OrderLine>(savedOrderLineId);
+                order = session.Get<Order>(savedOrderId);
+
+                // when cascade is set to all-delete-orphan removing the object from the collection 
+                // deletes the object
+                order.OrderLines.Remove(ol1);
+
+                session.Save(order);
+                session.Flush();
+
+                // verify the order line got deleted
+                Assert.That(session.Get<OrderLine>(savedOrderLineId), Is.Null);
+                
+            }
+        }
     }
 }

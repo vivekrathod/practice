@@ -77,8 +77,12 @@
     <Compile Include="Tests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Mappings\Order.hbm.xml" />
-    <EmbeddedResource Include="Mappings\OrderLine.hbm.xml" />
+    <EmbeddedResource Include="Mappings\Order.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mappings\OrderLine.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

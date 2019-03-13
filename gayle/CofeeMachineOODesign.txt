@@ -1,0 +1,27 @@
+public abstract class Machine
+{
+	void TurnOn();
+	void TurnOff();
+}
+
+public class CoffeeMachine : Machine
+{
+	void CheckAndReplaceFilter();
+
+	void AddCoffee(int numCups);
+	
+	void AddWater(int numCups);
+	void AddMilk(int numCups);
+	void AddIce(int numCups);
+	
+	void MakeCoffee(CoffeeType type);
+	void PourCoffee(int numCups);
+}
+
+public enum CoffeeType
+{
+	Regular,
+	Expresso,
+	Latte,
+	Iced,
+}

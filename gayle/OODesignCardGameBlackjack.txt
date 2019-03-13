@@ -1,0 +1,98 @@
+OO design for the game of Blackjack 
+public interface ICard
+{
+	
+}
+public class Card
+{
+	private Rank _rank;
+	private Suite _suite;
+	
+	public Card(Sutie suite, Rank rank)
+	{
+		_rank = rank;
+		_suite = suite;
+	}
+	
+	public override bool Equals(Object o)
+	{
+		// match rank and suite
+	}
+	
+	public override GetHashCode()
+	{
+		return _rank.GetHashCode() ^ _suite.GetHashCode();
+	}
+	
+	public static bool operator==(Card a, Card b)
+	{
+		return a.Equals(b);
+	}
+	
+	public static bool operator !=(Card a, Card b)
+	{
+		return !(a==b);
+	}
+	
+	public static bool operator >(Card a, Card b)
+	{
+		if (a.Suite != b.Suite)
+			throw new ArgumentException("Mismatching suites..");
+			
+		return (a.Rank > b.Rank)
+	}
+	
+	public static bool operator <(Card a, Card b)
+	{
+		if (a.Suite != b.Suite)
+			throw new ArgumentException("Mismatching suites..");
+			
+		return (a.Rank < b.Rank)
+	}
+}
+
+
+public class CardFactory
+{
+	public Card CreateCard()
+}
+
+public class Deck
+{
+	private Card[] _cards = new Card[52];
+	
+	public Deck()
+	{
+		foreach (var rank in Rank.GetValues())
+		{
+			foreach	(var suite in Suite.GetValues())
+			{
+				_cards.Add(new Card(suite, rank));
+			}
+		}
+	}
+	
+	public void Shuffle()
+	{
+		
+	}
+}
+
+public enum Suite
+{
+	Spade,
+	Heart,
+	Diamond,
+	Club
+}
+
+public enum Rank
+{
+	Ace,
+	Two,
+	Three,....
+	..
+	Jack,
+	Queen,
+	King
+}

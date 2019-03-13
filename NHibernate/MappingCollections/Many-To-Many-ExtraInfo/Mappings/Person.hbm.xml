@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="Many-To-Many-ExtraInfo"
+                   namespace="Many_To_Many_ExtraInfo">
+
+  <class name="Person" table="Person">
+
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+
+    <property name="Name" />
+
+    <bag name="Addresses" table="PersonAddress" cascade="save-update">
+      <key column="PersonId"/>
+      <many-to-many column="AddressId" class="Address"/>
+    </bag>
+
+  </class>
+
+</hibernate-mapping>

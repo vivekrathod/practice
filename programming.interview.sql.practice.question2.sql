@@ -24,4 +24,3 @@ select * from users
 left join user_history on users.id = user_history.u_id
 where user_history.u_id is null
 
--- find users 

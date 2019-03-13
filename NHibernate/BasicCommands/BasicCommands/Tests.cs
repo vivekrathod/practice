@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using BasicCommands.Model;
 using log4net;
 using NUnit.Framework;
 using NHibernate;
+using NHibernate.Linq;
 using NHibernate.Proxy;
 using NHibernate.Tool.hbm2ddl;
 
@@ -25,7 +29,7 @@ namespace BasicCommands
         public void OneTimeSetUp()
         {
             //log4net.Config.BasicConfigurator.Configure();
-            log4net.Config.XmlConfigurator.ConfigureAndWatch(new FileInfo(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+            //log4net.Config.XmlConfigurator.ConfigureAndWatch(new FileInfo(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
             _log = LogManager.GetLogger(typeof(TestFixture));
         }
 
@@ -52,7 +56,7 @@ namespace BasicCommands
             configuration.Properties["dialect"] = "NHibernate.Dialect.SQLiteDialect";
             configuration.Properties["connection.driver_class"] = "NHibernate.Driver.SQLite20Driver";
             configuration.Properties["connection.connection_string"] = connectionStringBuilder.ConnectionString;
-            configuration.Properties["show_sql"] = "true";
+            configuration.Properties["show_sql"] = "false";
             configuration.Properties["generate_statistics"] = "false";
 
             configuration.AddAssembly(typeof(TestFixture).Assembly);
@@ -68,50 +72,6 @@ namespace BasicCommands
         }
 
         [Test]
-        public void TestParentChildRelationship()
-        {
-            Order order;
-            int savedOrderId;
-            OrderLine ol1;
-            OrderLine ol2;
-            using (var session = _sessionFactory.OpenSession())
-            // using (var tran = session.BeginTransaction())
-            {
-                ol1 = new OrderLine { Amount = 12, ProductName = "sun screen"};//, Order = order };
-                ol2 = new OrderLine { Amount = 13, ProductName = "banjo"};//, Order = order };
-                // if 'all' or 'save-update' option is not specified then save the OrderLine objects individually
-                session.Save(ol1);
-                session.Save(ol2);
-
-                order = new Order { OrderNumber = 1, OrderDate = DateTime.Today };
-                order.OrderLines = new List<OrderLine>{ ol1, ol2 };
-
-                // if the cascade="all" or "save-update" option is specified in the collection mapping then saving the Order 
-                // will save the OrderLine instances added to OrderLines collection as well
-                savedOrderId = (int)session.Save(order);
-                
-
-                // Flush will sync the in-memory state with the persisted state by writing to the database
-                session.Flush();
-
-                // if a transcation was opened then it has to be committed to persist the changes - no need to call Flush in that case
-                //tran.Commit();
-            }
-
-            using (var session = _sessionFactory.OpenSession())
-            {
-                order = session.Load<Order>(savedOrderId);
-
-                Assert.True(order.OrderLines.Count == 2);
-                OrderLine loadedOl1 = order.OrderLines.FirstOrDefault(ol => ol.Id == ol1.Id);
-                Assert.NotNull(loadedOl1);
-                Assert.True(loadedOl1.Amount == ol1.Amount);
-                Assert.True(loadedOl1.ProductName == ol1.ProductName);
-                Assert.True(loadedOl1.Order == order);
-            }
-        }
-
-        [Test]
         public void TestUpdate()
         {
             int savedOrderId;
@@ -119,6 +79,7 @@ namespace BasicCommands
             using (var session = _sessionFactory.OpenSession())
             {
                 order = new Order {OrderNumber = 1, OrderDate = DateTime.Today};
+                _log.Info("issuing Save on Order...");
                 savedOrderId = (int)session.Save(order);
                 session.Flush();
             }
@@ -127,7 +88,7 @@ namespace BasicCommands
             {
                 order.OrderDate = DateTime.Today.AddDays(1);
 
-                _log.Info("issuing update on Order...");
+                _log.Info("issuing Update on Order...");
                 session.Update(order);
 
                 _log.Info("flushing the session...");
@@ -136,12 +97,35 @@ namespace BasicCommands
 
             using (var session = _sessionFactory.OpenSession())
             {
+                _log.Info("Loading the Order...");
                 order = session.Load<Order>(savedOrderId);
                 Assert.True(order.OrderDate == DateTime.Today.AddDays(1));
             }
 
         }
 
+        [Test]
+        public void TestIncorrectUseOfSaveOrUpdate()
+        {
+            // create assigned identity
+            TestEntity1 testEntity1 = new TestEntity1 {Id = Guid.NewGuid()};
+            using (var session = _sessionFactory.OpenSession())
+            {
+                // calling SaveOrUpdate will issue a SELECT first in order to determine if a database row exists for the entity 
+                //NHibernate: SELECT testentity_.Id, testentity_.TestProp1 as TestPr3_2_, testentity_.TestProp2 as TestPr4_2_ FROM TestEntity1 testentity_ WHERE testentity_.Id = @p0; @p0 = d8119df4 - aeee - 467e-ba5e - ab53e64aed88[Type: Guid(0:0:0)]
+                //NHibernate: INSERT INTO TestEntity1(TestProp1, TestProp2, Type, Id) VALUES(@p0, @p1, 'BasicCommands.Model.TestEntity1', @p2); @p0 = 0[Type: Int32(0:0:0)], @p1 = NULL[Type: String(0:0:0)], @p2 = d8119df4 - aeee - 467e-ba5e - ab53e64aed88[Type: Guid(0:0:0)]
+                session.SaveOrUpdate(testEntity1);
+                session.Flush();
+
+
+                // calling just Save will 'save' the extra SELECT
+                //NHibernate: INSERT INTO TestEntity1 (TestProp1, TestProp2, Type, Id) VALUES (@p0, @p1, 'BasicCommands.Model.TestEntity1', @p2);@p0 = 0 [Type: Int32 (0:0:0)], @p1 = NULL [Type: String (0:0:0)], @p2 = 020c1f08-297d-4d98-bea5-1c236d767cb9 [Type: Guid (0:0:0)]
+                //testEntity1 = new TestEntity1 {Id = Guid.NewGuid()};
+                //var savedTestEntity1Id = session.Save(testEntity1);
+                session.Flush();
+            };
+            
+        }
 
         [Test]
         public void TestSaveOrUpdate()
@@ -208,6 +192,42 @@ namespace BasicCommands
                 session.Flush();
             }
         }
-       
+
+        [Test]
+        public void TestDateSaveRetrieve()
+        {
+            using (var session = _sessionFactory.OpenSession())
+            {
+                session.Save(new TestEntity1 {Id = Guid.NewGuid(), Today = DateTime.Today});
+            }
+            _log.Error("testing...");
+        }
+
+        [Test]
+        public void TestTransactions()
+        {
+            using (var session = _sessionFactory.OpenSession())
+            {
+                
+                Stopwatch s = new Stopwatch();
+                session.BeginTransaction(IsolationLevel.ReadCommitted);
+                for (int i = 0; i < 60000; i++)
+                {
+                    session.Save(new TestEntity1 { Id = Guid.NewGuid(), TestProp1 = i, TestProp2 = $"Abc{i}Xyz", Today = DateTime.UtcNow });
+                }
+                session.Transaction.Commit();
+
+                for (int i = 0; i < 3; i++)
+                {
+
+                    s.Restart();
+                    session.BeginTransaction(IsolationLevel.ReadCommitted);
+                    var result = session.Query<TestEntity1>().Where(k => k.TestProp2.Contains("")).Skip(0).Take(100).ToList(); //session.QueryOver<TestEntity1>();
+                    session.Transaction.Commit();
+                    s.Stop();
+                    Console.WriteLine(s.ElapsedMilliseconds); // >150ms
+                }
+            }
+        }
     }
 }

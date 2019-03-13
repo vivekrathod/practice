@@ -10,3 +10,4 @@ insert into employees values(6, 'e6', 8000)
 select e1.name, e1.salary from employees e1 join (select avg(salary) avg_sal from employees) as e2 on e1.salary > e2.avg_sal
 
 --alternative
+select name, salary from employees where salary >  (select avg(salary) from employees)

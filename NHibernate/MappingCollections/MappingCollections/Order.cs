@@ -8,6 +8,11 @@ namespace MappingCollections
 {
     public class Order
     {
+        public Order()
+        {
+            OrderLines = new List<OrderLine>();
+        }
+
         public virtual int Id { get; set; }
         public virtual int OrderNumber { get; set; }
         public virtual DateTime OrderDate { get; set; }

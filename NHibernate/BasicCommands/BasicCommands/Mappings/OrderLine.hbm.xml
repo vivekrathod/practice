@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
-                   assembly="MappingCollections"
-                   namespace="MappingCollections">
+                   assembly="BasicCommands"
+                   namespace="BasicCommands">
 
   <class name="OrderLine">
     <id name="Id">

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="BasicCommands"
+                   namespace="BasicCommands.Model">
+
+  <class name="TestEntity1" table="TestEntity1">
+
+    <id name="Id">
+      <generator class="assigned"/>
+    </id>
+    <discriminator column="Type"/>
+
+    <property name="TestProp1" />
+    <property name="TestProp2" />
+    <property name="Today" />
+    
+
+  </class>
+
+</hibernate-mapping>
