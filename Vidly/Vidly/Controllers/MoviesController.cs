@@ -33,7 +33,10 @@ namespace Vidly.Controllers
             return Content("pageIndex=" + pageIndex + "&sortBy=" + sortBy);
         }
 
-        public ActionResult ByReleaseDate(int year, int month)
+        // \note the '?' at the end of 'year' makes it optional 
+        // this allows for the route to match both http://localhost:62444/movies/released/2018/09 as well as http://localhost:62444/movies/released?year=2018&month=09
+        [Route("movies/released/{year?}/{month?}")]
+        public ActionResult ByReleaseDate(int? year, int? month)
         {
             return Content("year=" + year + "&month=" + month);
         }
