@@ -10,12 +10,12 @@ namespace BubbleSort
     {
         static void Main(string[] args)
         {
-            int[] list = new int[] { 34,22,21,10,6,4,3,1 };
+            int[] list = new [] { 34,22,21,10,6,4,3,1 };
 
             Console.WriteLine("Bubble sorting..");
             for (int k = 0; k < list.Length-1; k++)
             {
-                for (int i = 0; i < list.Length-1; i++)
+                for (int i = 0; i < list.Length - 1 - k; i++)
                 {
                     if (list[i] > list[i + 1])
                     {
@@ -23,10 +23,8 @@ namespace BubbleSort
                         list[i] = list[i + 1];
                         list[i + 1] = temp;
                     }
-                    Console.Write(string.Format("{0}, ", list[i]));
                 }
-                Console.Write(list[list.Length - 1]);
-                Console.WriteLine();
+                PrintArray(list);
             }
             Console.ReadKey();
 
@@ -50,6 +48,15 @@ namespace BubbleSort
                 if (!swap) break;
             }
             Console.ReadKey();
+        }
+
+        static void PrintArray(int[] list)
+        {
+            foreach (var i in list)
+            {
+                Console.Write(i+" ");
+            }
+            Console.WriteLine();
         }
     }
 }
