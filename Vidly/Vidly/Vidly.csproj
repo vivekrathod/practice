@@ -179,11 +179,24 @@
     <Compile Include="Migrations\202002061553014_InitialModel.Designer.cs">
       <DependentUpon>202002061553014_InitialModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003060302575_AddIsSubscribedToNewsletter.cs" />
+    <Compile Include="Migrations\202003060302575_AddIsSubscribedToNewsletter.Designer.cs">
+      <DependentUpon>202003060302575_AddIsSubscribedToNewsletter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003060345420_AddMembershipType.cs" />
+    <Compile Include="Migrations\202003060345420_AddMembershipType.Designer.cs">
+      <DependentUpon>202003060345420_AddMembershipType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003060349367_AddMembershipTypeId.cs" />
+    <Compile Include="Migrations\202003060349367_AddMembershipTypeId.Designer.cs">
+      <DependentUpon>202003060349367_AddMembershipTypeId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\MembershipType.cs" />
     <Compile Include="Models\Movie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -270,6 +283,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202002061553014_InitialModel.resx">
       <DependentUpon>202002061553014_InitialModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003060302575_AddIsSubscribedToNewsletter.resx">
+      <DependentUpon>202003060302575_AddIsSubscribedToNewsletter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003060345420_AddMembershipType.resx">
+      <DependentUpon>202003060345420_AddMembershipType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003060349367_AddMembershipTypeId.resx">
+      <DependentUpon>202003060349367_AddMembershipTypeId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
