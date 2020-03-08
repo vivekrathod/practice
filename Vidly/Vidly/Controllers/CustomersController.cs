@@ -31,7 +31,7 @@ namespace Vidly.Controllers
 
         public ActionResult Details(int id)
         {
-            foreach (var customer in _context.Customers)
+            foreach (var customer in _context.Customers.Include(c => c.MembershipType))
             {
                 if (customer.Id == id)
                     return View(customer);
