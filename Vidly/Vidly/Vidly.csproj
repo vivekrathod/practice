@@ -211,9 +211,30 @@
     <Compile Include="Migrations\202003081630184_MakeCustomerBirthDateNullable.Designer.cs">
       <DependentUpon>202003081630184_MakeCustomerBirthDateNullable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003081944326_AddMovies.cs" />
+    <Compile Include="Migrations\202003081944326_AddMovies.Designer.cs">
+      <DependentUpon>202003081944326_AddMovies.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003081959475_AddGenreToMovie.cs" />
+    <Compile Include="Migrations\202003081959475_AddGenreToMovie.Designer.cs">
+      <DependentUpon>202003081959475_AddGenreToMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003082004463_PopulateGenres.cs" />
+    <Compile Include="Migrations\202003082004463_PopulateGenres.Designer.cs">
+      <DependentUpon>202003082004463_PopulateGenres.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003091920256_AdditionalPropertiesForMovie.cs" />
+    <Compile Include="Migrations\202003091920256_AdditionalPropertiesForMovie.Designer.cs">
+      <DependentUpon>202003091920256_AdditionalPropertiesForMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003091944436_MarkPropertiesForMovieAsRequired.cs" />
+    <Compile Include="Migrations\202003091944436_MarkPropertiesForMovieAsRequired.Designer.cs">
+      <DependentUpon>202003091944436_MarkPropertiesForMovieAsRequired.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MembershipType.cs" />
@@ -283,6 +304,7 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Movies\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -327,6 +349,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003081630184_MakeCustomerBirthDateNullable.resx">
       <DependentUpon>202003081630184_MakeCustomerBirthDateNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003081944326_AddMovies.resx">
+      <DependentUpon>202003081944326_AddMovies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003081959475_AddGenreToMovie.resx">
+      <DependentUpon>202003081959475_AddGenreToMovie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003082004463_PopulateGenres.resx">
+      <DependentUpon>202003082004463_PopulateGenres.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003091920256_AdditionalPropertiesForMovie.resx">
+      <DependentUpon>202003091920256_AdditionalPropertiesForMovie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003091944436_MarkPropertiesForMovieAsRequired.resx">
+      <DependentUpon>202003091944436_MarkPropertiesForMovieAsRequired.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
