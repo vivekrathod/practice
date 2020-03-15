@@ -44,7 +44,11 @@ namespace Vidly.Controllers
         public ViewResult New()
         {
             var memTypes = _context.MembershipTypes.ToList();
-            var newCustomerViewModel = new CustomerFormViewModel {MembershipTypes = memTypes};
+            var newCustomerViewModel = new CustomerFormViewModel
+            {
+                Customer = new Customer(),
+                MembershipTypes = memTypes
+            };
             return View("CustomerForm", newCustomerViewModel);
         }
 
