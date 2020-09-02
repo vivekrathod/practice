@@ -44,5 +44,17 @@ namespace TasksExample
             Console.WriteLine("Exiting Method3");
             return innerTask;
         }
+
+        public async Task Method4Async()
+        {
+            Console.WriteLine("Inside Method4");
+            var testList = new List<int>{1,2,3};
+            var allTasks = 
+                testList
+                    .Select(async item => { Console.WriteLine($"Inside inner select Method {item}");  await Task.Delay(5000); Console.WriteLine($"Exiting inner select Method {item}"); }
+                    );
+            await Task.WhenAll(allTasks);
+            Console.WriteLine($"Exiting Method4");
+        }
     }
 }

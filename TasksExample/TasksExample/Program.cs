@@ -12,6 +12,8 @@ namespace TasksExample
         static void Main(string[] args)
         {
             Class1 class1 = new Class1();
+            class1.Method4Async();
+            Console.WriteLine("Doing work while the async method continues to wait...");
 
             // testing async and await keywords
             Task task1 = class1.Method1Async();
