@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using AzureDotNetCoreWebAppDemo.Data;
 
 namespace AzureDotNetCoreWebAppDemo
 {
@@ -24,6 +26,9 @@ namespace AzureDotNetCoreWebAppDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<ToDoDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ToDoDbContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
