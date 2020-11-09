@@ -136,6 +136,10 @@
     <Compile Include="Migrations\202011051446104_InitialCreate.designer.cs">
       <DependentUpon>202011051446104_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011081142267_AddedStartDate.cs" />
+    <Compile Include="Migrations\202011081142267_AddedStartDate.designer.cs">
+      <DependentUpon>202011081142267_AddedStartDate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ToDoItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -202,6 +206,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202011051446104_InitialCreate.resx">
       <DependentUpon>202011051446104_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011081142267_AddedStartDate.resx">
+      <DependentUpon>202011081142267_AddedStartDate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

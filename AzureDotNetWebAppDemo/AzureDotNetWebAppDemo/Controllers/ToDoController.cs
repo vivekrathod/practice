@@ -21,6 +21,7 @@ namespace AzureDotNetWebAppDemo.Controllers
                     {
                         Id = item.Id,
                         Description = item.Description, 
+                        StartDate = item.StartDate,
                         Finished = item.Finished
                     });
             return View(items);
@@ -41,6 +42,7 @@ namespace AzureDotNetWebAppDemo.Controllers
                 var item = new ToDoItem
                     {
                         Description = itemViewModel.Description, 
+                        StartDate = itemViewModel.StartDate,
                         Finished = itemViewModel.Finished
                     }
                     ;
@@ -64,6 +66,7 @@ namespace AzureDotNetWebAppDemo.Controllers
             {
                 Id = id,
                 Description = item.Description,
+                StartDate = item.StartDate,
                 Finished = item.Finished
             };
 
@@ -80,6 +83,7 @@ namespace AzureDotNetWebAppDemo.Controllers
                 if (item != null)
                 {
                     item.Description = itemViewModel.Description;
+                    item.StartDate = itemViewModel.StartDate;
                     item.Finished = itemViewModel.Finished;
                 }
 
@@ -102,6 +106,7 @@ namespace AzureDotNetWebAppDemo.Controllers
             {
                 Id = item.Id, 
                 Description = item.Description, 
+                StartDate = item.StartDate,
                 Finished = item.Finished
             };
             return View(itemViewModel);
