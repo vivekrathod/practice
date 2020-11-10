@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "mssql1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/sqlserver2forserverless/databases/sqldatabase1",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/sqlserver2forserverless/databases/AzureDotNetWebAppDemo_db",
       "type": "mssql.azure",
       "connectionId": "ToDoContextConnectionString",
       "secretStore": "AzureAppSettings"
