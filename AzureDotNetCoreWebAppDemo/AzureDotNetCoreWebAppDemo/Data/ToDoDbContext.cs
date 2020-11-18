@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using AzureDotNetCoreWebAppDemo.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace AzureDotNetCoreWebAppDemo.Data
 {
-    public class ToDoDbContext : DbContext
+    public class ToDoDbContext : IdentityDbContext<IdentityUser>
     {
         public ToDoDbContext (DbContextOptions<ToDoDbContext> options)
             : base(options)

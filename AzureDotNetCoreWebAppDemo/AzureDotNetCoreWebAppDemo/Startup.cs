@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using AzureDotNetCoreWebAppDemo.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace AzureDotNetCoreWebAppDemo
 {
@@ -26,9 +27,13 @@ namespace AzureDotNetCoreWebAppDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddRazorPages();
 
             services.AddDbContext<ToDoDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ToDoDbContext")));
+
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<ToDoDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +54,7 @@ namespace AzureDotNetCoreWebAppDemo
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -56,6 +62,8 @@ namespace AzureDotNetCoreWebAppDemo
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=ToDoItems}/{action=Index}/{id?}");
+
+                endpoints.MapRazorPages();
             });
         }
     }

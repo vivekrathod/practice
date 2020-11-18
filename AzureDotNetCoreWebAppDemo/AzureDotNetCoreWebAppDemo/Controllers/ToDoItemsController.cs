@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AzureDotNetCoreWebAppDemo.Data;
 using AzureDotNetCoreWebAppDemo.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace AzureDotNetCoreWebAppDemo.Controllers
 {
+    [Authorize]
     public class ToDoItemsController : Controller
     {
         private readonly ToDoDbContext _context;
@@ -22,7 +26,8 @@ namespace AzureDotNetCoreWebAppDemo.Controllers
         // GET: ToDoItems
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ToDoItem.ToListAsync());
+            var currentUser = GetCurrentUser();
+            return View(await _context.ToDoItem.Where(i=>i.User == currentUser).ToListAsync());
         }
 
         // GET: ToDoItems/Details/5
@@ -58,6 +63,7 @@ namespace AzureDotNetCoreWebAppDemo.Controllers
         {
             if (ModelState.IsValid)
             {
+                toDoItem.User = GetCurrentUser();
                 _context.Add(toDoItem);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -148,6 +154,13 @@ namespace AzureDotNetCoreWebAppDemo.Controllers
         private bool ToDoItemExists(int id)
         {
             return _context.ToDoItem.Any(e => e.Id == id);
+        }
+
+        IdentityUser GetCurrentUser()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var currentUser = _context.Users.Find(userId);
+            return currentUser;
         }
     }
 }

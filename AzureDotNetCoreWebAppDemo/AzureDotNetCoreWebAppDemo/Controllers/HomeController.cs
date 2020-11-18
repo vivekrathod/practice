@@ -20,7 +20,7 @@ namespace AzureDotNetCoreWebAppDemo.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "ToDoItems");
+            return View();
         }
 
         public IActionResult Privacy()

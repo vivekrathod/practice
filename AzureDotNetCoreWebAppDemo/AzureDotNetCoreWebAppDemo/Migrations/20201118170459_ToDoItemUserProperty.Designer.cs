@@ -4,14 +4,16 @@ using AzureDotNetCoreWebAppDemo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AzureDotNetCoreWebAppDemo.Migrations
 {
     [DbContext(typeof(ToDoDbContext))]
-    partial class ToDoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201118170459_ToDoItemUserProperty")]
+    partial class ToDoItemUserProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

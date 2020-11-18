@@ -4,14 +4,16 @@ using AzureDotNetCoreWebAppDemo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AzureDotNetCoreWebAppDemo.Migrations
 {
     [DbContext(typeof(ToDoDbContext))]
-    partial class ToDoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201118023412_IdentitySchema")]
+    partial class IdentitySchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,12 +34,7 @@ namespace AzureDotNetCoreWebAppDemo.Migrations
                     b.Property<bool>("Finished")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("ToDoItem");
                 });
@@ -240,13 +237,6 @@ namespace AzureDotNetCoreWebAppDemo.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("AzureDotNetCoreWebAppDemo.Models.ToDoItem", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
