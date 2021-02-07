@@ -6,8 +6,17 @@
         xmlns:local="clr-namespace:WpfPrismDemo.Views"
         mc:Ignorable="d"
         Title="ShellWindow" Height="450" Width="800"
-        xmlns:prism="http://prismlibrary.com/">
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True">
     <Grid>
-        <ContentControl prism:RegionManager.RegionName="ContentControlRegion"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <Button Margin="5" Command="{Binding NavigateCommand}" CommandParameter="ViewA">Navigate to ViewA</Button>
+            <Button Margin="5" Command="{Binding NavigateCommand}" CommandParameter="ViewB">Navigate to ViewB</Button>
+        </StackPanel>
+        <ContentControl Grid.Row="1"  prism:RegionManager.RegionName="ContentRegion"/>
     </Grid>
 </Window>

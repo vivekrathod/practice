@@ -12,7 +12,7 @@ namespace ModuleA.ViewModels
     {
         public DelegateCommand ClickCommand { get; private set; }
 
-        private string _text = "Hello from ViewModel";
+        private string _text = "Hello from ViewAViewModel";
         public string Text
         {
             get { return _text; }

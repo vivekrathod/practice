@@ -63,7 +63,14 @@
       <DependentUpon>ViewA.xaml</DependentUpon>
     </Compile>
     <Compile Include="ModuleAModule.cs" />
+    <Compile Include="Views\ViewB.xaml.cs">
+      <DependentUpon>ViewB.xaml</DependentUpon>
+    </Compile>
     <Page Include="Views\ViewA.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ViewB.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
