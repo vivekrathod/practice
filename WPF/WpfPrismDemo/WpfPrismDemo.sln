@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPrismDemo", "WpfPrismDemo\WpfPrismDemo.csproj", "{A309A94C-1BB8-47C1-B8EC-B3228091F219}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleA", "ModuleA\ModuleA.csproj", "{71C8B1A6-E02F-4699-88FB-DA4C1D38C4A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A309A94C-1BB8-47C1-B8EC-B3228091F219}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A309A94C-1BB8-47C1-B8EC-B3228091F219}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A309A94C-1BB8-47C1-B8EC-B3228091F219}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71C8B1A6-E02F-4699-88FB-DA4C1D38C4A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71C8B1A6-E02F-4699-88FB-DA4C1D38C4A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71C8B1A6-E02F-4699-88FB-DA4C1D38C4A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71C8B1A6-E02F-4699-88FB-DA4C1D38C4A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

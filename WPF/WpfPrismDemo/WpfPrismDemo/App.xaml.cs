@@ -1,4 +1,6 @@
-﻿using Prism.Ioc;
+﻿using ModuleA;
+using Prism.Ioc;
+using Prism.Modularity;
 using Prism.Regions;
 using Prism.Unity;
 using System;
@@ -33,6 +35,18 @@ namespace WpfPrismDemo
         {
             base.ConfigureRegionAdapterMappings(regionAdapterMappings);
             regionAdapterMappings.RegisterMapping(typeof(StackPanel), Container.Resolve<StackPanelRegionAdapter>());
+        }
+
+        // uncomment to add a module from code
+        //protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+        //{
+        //    base.ConfigureModuleCatalog(moduleCatalog);
+        //    moduleCatalog.AddModule<ModuleAModule>();
+        //}
+
+        protected override IModuleCatalog CreateModuleCatalog()
+        {
+            return new ConfigurationModuleCatalog();
         }
     }
 }
