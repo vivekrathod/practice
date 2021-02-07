@@ -21,9 +21,8 @@ namespace ModuleA.Views
     /// </summary>
     public partial class ViewA : UserControl
     {
-        public ViewA(ViewAViewModel viewModel)
+        public ViewA()
         {
-            DataContext = viewModel;
             InitializeComponent();
         }
     }
