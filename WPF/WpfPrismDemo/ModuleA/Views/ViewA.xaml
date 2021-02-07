@@ -11,5 +11,6 @@
     <StackPanel>
         <Button Command="{Binding ClickCommand}">Click Me</Button>
         <TextBlock Text="{Binding Text}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48" />
+        <TextBlock Text="{Binding PageViews}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48" />
     </StackPanel>
 </UserControl>
