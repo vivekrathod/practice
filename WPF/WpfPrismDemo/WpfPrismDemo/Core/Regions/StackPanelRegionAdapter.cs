@@ -38,11 +38,6 @@ namespace WpfPrismDemo.Core.Regions
             };
         }
 
-        private void Views_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override IRegion CreateRegion()
         {
             // since we are not supporting activation for regions
