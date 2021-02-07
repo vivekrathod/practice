@@ -31,6 +31,9 @@ namespace ModuleA
             region.Add(view2);
             // display (activate) the view
             region.Activate(view2);
+
+            // display view1
+            region.Activate(view1);
         }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
