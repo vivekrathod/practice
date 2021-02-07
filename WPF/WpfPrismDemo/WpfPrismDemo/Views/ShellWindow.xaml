@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfPrismDemo.Views"
         mc:Ignorable="d"
-        Title="ShellWindow" Height="450" Width="800">
+        Title="ShellWindow" Height="450" Width="800"
+        xmlns:prism="http://prismlibrary.com/">
     <Grid>
-        <TextBlock Text="Hello World!" />
+        <StackPanel prism:RegionManager.RegionName="StackPanelRegion"/>
     </Grid>
 </Window>
